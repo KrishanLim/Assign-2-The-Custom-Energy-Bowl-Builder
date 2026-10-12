@@ -33,3 +33,16 @@ button {
     border: none;
     cursor: pointer;
 }
+
+#output {
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+/* validation messages */
+.error {
+    color: #c0392b;
+    background:#fdecea;
+    padding: 10px 30px;
+    border-radius: 5px;
+}

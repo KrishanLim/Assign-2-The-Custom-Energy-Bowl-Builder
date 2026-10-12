@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Bowl Builder</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <h1>Energy Bowl Builder</h1>
+
+    <form id="bowlForm">
+
+        <!-- Base -->
+        <h3>Base</h3>
+        <select id="base">
+            <option value="">Choose a base</option>
+            <option value="Acai">Acai</option>
+            <option value="Yogurt">Yogurt</option>
+            <option value="Oatmeal">Oatmeal</option>
+            <option value="Chia Pudding">Chia Pudding</option>
+        </select>
+
+        <!-- Fruits -->
+        <h3>Fruits</h3>
+        <input type="checkbox" name="fruits" value="Banana"> Banana
+        <input type="checkbox" name="fruits" value="Strawberry"> Strawberry
+        <input type="checkbox" name="fruits" value="Blueberry"> Blueberry
+        <input type="checkbox" name="fruits" value="Mango">Mango
+
+        <!-- toppings -->
+        <h3>Toppings</h3>
+        <input type="checkbox" name="toppings" value="Granola"> Granola
+        <input type="checkbox" name="toppings" value="Coconut Flakes"> Coconut Flakes
+        <input type="checkbox" name="toppings" value="Nuts"> Nuts
+        <input type="checkbox" name="toppings" value="Seeds"> Seeds
+
+        <h3>Protein</h3>
+        <select id="protein">
+            <option value="None">None</option>
+            <option value="Whey">Whey</option>
+            <option value="Peanut Butter">Peanut Butter</option>
+        </select>
+
+        <h3>Sweetener</h3>
+        <select id="sweetener">
+            <option value="None">None</option>
+            <option value="Honey">Honey</option>
+            <option value="Maple Syrup">Maple Syrup</option>
+        </select>
+
+        <!-- Size -->
+        <h3>Size</h3>
+        <input type="radio" name="size" value="Small"> Small
+        <input type="radio" name="size" value="Medium" checked> Medium
+        <input type="radio" name="size" value="Large"> Large
+
+        <h3>Special Instructions</h3>
+        <textarea id="instructions" rows="3"></textarea>
+
+        <br><br>
+        <button type="submit">Place Order</button>
+    </form>
+
+    <div id="output"></div>
+
+</body>
+</html>

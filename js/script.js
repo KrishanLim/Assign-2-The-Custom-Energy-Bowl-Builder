@@ -1,65 +1,47 @@
-// Energy Bowl Builder - main script
+// Energy Bowl Builder - form handling and output
 
-// get all the values the user picked in the form
+const form = document.getElementById("bowlForm");
+const output = document.getElementById("orderOutput");
+
+
+// values of all checked boxes/radios with this name
+function getCheckedValues(name) {
+    let checked = document.querySelectorAll('input[name="' + name + '"]:checked');
+    return Array.from(checked, function (input) {
+        return input.value;
+    });
+}
+
+// collect everything the user picked
 function getFormData() {
-
-    let base = document.getElementById("base").value;
-    let protein = document.getElementById("protein").value;
-    let sweetener = document.getElementById("sweetener").value;
-    let instructions = document.getElementById("instructions").value.trim();
-
-    // checkboxes - loop through and keep only the checked ones
-    let fruits = [];
-    let fruitBoxes = document.querySelectorAll('input[name="fruits"]:checked');
-    for (let i = 0; i < fruitBoxes.length; i++) {
-        fruits.push(fruitBoxes[i].value);
-    }
-
-    let toppings = [];
-    let toppingBoxes = document.querySelectorAll('input[name="toppings"]:checked');
-    for(let i = 0; i < toppingBoxes.length; i++) {
-        toppings.push(toppingBoxes[i].value);
-    }
-
-    //size radio
-    let sizeChoice = document.querySelector('input[name="size"]:checked');
-    let size = sizeChoice ? sizeChoice.value : "";
-
     return {
-        base: base,
-        fruits: fruits,
-        toppings: toppings,
-        protein: protein,
-        sweetener: sweetener,
-        size: size,
-        instructions: instructions
+        size: getCheckedValues("size")[0] || "",
+        base: document.getElementById("base").value,
+        fruits: getCheckedValues("fruits"),
+        toppings: getCheckedValues("toppings"),
+        protein: document.getElementById("protein").value,
+        sweetener: getCheckedValues("sweetener")[0] || "None",
+        instructions: document.getElementById("instructions").value.trim()
     };
 }
 
-
-/* check the form data before making the bowl
-   returns a list of error messages (empty list = all good) */
+// returns a list of error messages (empty list = all good)
 function validateForm(data) {
     let errors = [];
-
-    if (data.base === "") {
-        errors.push("Please choose a base for your bowl.");
-    }
-
-    if (data.fruits.length == 0) {
-        errors.push("Pick at least one fruit.");
-    }
-
-    // dont want people piling on everything
-    if (data.toppings.length > 3) {
-        errors.push("You can only pick up to 3 toppings.");
-    }
 
     if (data.size === "") {
         errors.push("Please select a size.");
     }
-
-    if(data.instructions.length > 150) {
+    if (data.base === "") {
+        errors.push("Please choose a base for your bowl.");
+    }
+    if (data.fruits.length === 0) {
+        errors.push("Pick at least one fruit.");
+    }
+    if (data.toppings.length > 3) {
+        errors.push("You can only pick up to 3 toppings.");
+    }
+    if (data.instructions.length > 150) {
         errors.push("Special instructions must be 150 characters or less.");
     }
 
@@ -67,29 +49,42 @@ function validateForm(data) {
 }
 
 
-// ---- connect the form ----
-const form = document.getElementById("bowlForm");
-const output = document.getElementById("output");
+// small helper so every element is built the same way
+function makeElement(tag, className, text) {
+    let el = document.createElement(tag);
+    el.className = className;
+    el.textContent = text; // textContent so user text can't inject html
+    return el;
+}
+
+function showErrors(errors) {
+    let list = makeElement("ul", "error", "");
+    errors.forEach(function (message) {
+        list.appendChild(makeElement("li", "", message));
+    });
+    output.replaceChildren(list);
+}
+
+function showOrder(bowl) {
+    let card = makeElement("div", "summary", "");
+    card.appendChild(makeElement("h2", "", "Order placed! Your bowl is on its way."));
+    card.appendChild(makeElement("p", "description", bowl.getDescription()));
+    card.appendChild(makeElement("p", "total", "Total: $" + bowl.calculatePrice().toFixed(2)));
+    output.replaceChildren(card);
+}
+
 
 form.addEventListener("submit", function (event) {
     event.preventDefault(); // stop the page from reloading
 
     let data = getFormData();
     let errors = validateForm(data);
-    console.log("data: ", data, "\nerrors: ", errors);
 
-    // show errors if there are any
     if (errors.length > 0) {
-        let html = "<ul class='error'>";
-        for (let i = 0; i < errors.length; i++) {
-            html += "<li>" + errors[i] + "</li>";
-        }
-        html += "</ul>";
-        output.innerHTML = html;
-        return;
+        showErrors(errors);
+    } else {
+        showOrder(new EnergyBowl(data));
     }
 
-    // everything is valid
-    console.log(data);
-    output.innerHTML = "<p>Order received! Building your bowl...</p>";
+    output.scrollIntoView({ behavior: "smooth", block: "nearest" });
 });
